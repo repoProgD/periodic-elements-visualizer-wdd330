@@ -1,0 +1,36 @@
+/* General rules*/
+:root {
+    --primary-color: #6CACE4;
+    --secondary-color: #E7EEFB;
+    --overlay-color: #1512F5;
+    --accent1-color: #FF8E18;
+    --accent2-color: #E1D600;
+    --text-color-light: #FEFEFE;
+    --text-color-dark: #000000;
+    --text-color-light2: #FEFEFE;
+    --text-dark-color2: #020640;
+    --soft2-color: #A898E1;
+    --heading-font: "Lora", serif;
+    --body-font: "Roboto", sans-serif;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: var(--body-font);
+}
+
+/*Header*/
+
+header {
+    display: grid;
+    grid-template-columns: 24px auto 44px;
+    align-items: end;
+    padding-top: 5px;
+    column-gap: 8px;
+    background-color: var(--primary-color);
+    height: auto;
+    min-height: 100px;
+
+}

@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Chem-Visualizer-Visualizer | Home</title>
+    <title>Chem-Visualizer | Home</title>
     <link rel="stylesheet" href="/css/style.css" />
 
     <script type="module" src="/js/main.js"></script>
@@ -13,9 +13,24 @@
 <body>
     <header class="divider" id="dynamic-header"></header>
     <main class="divider">
-        <h1>Testing-NPM</h1>
+        <h1>Chemical Element Catalog</h1>
+        <p> Explore and sort chemical elements based on their properties</p>
+
+        <section id="control-panel">
+            <label for="property-select">Sort elements by:</label>
+            <select id="property-select">
+                <option value="number">Atomic Number</option>
+                <option value="name">Name</option>
+                <option value="mass">Atomic Mass</option>
+                <option value="radius">Atomic Radius</option>
+                <option value="electronegativity">Electronegativity</option>
+            </select>
+        </section>
+
+        <section id="catalog-container" class="catalog-grid">
+        </section>
     </main>
     <footer id="dynamic-footer"></footer>
-</body>
+
 
 </html>

@@ -42,7 +42,8 @@ export default class ExternalServices {
             radius: columns.indexOf("AtomicRadius"),
             mass: columns.indexOf("AtomicMass"),
             electronegativity: columns.indexOf("Electronegativity"),
-            config: columns.indexOf("ElectronicConfiguration"),
+            melting: columns.indexOf("MeltingPoint"),
+            boiling: columns.indexOf("BoilingPoint"),
             groupBlock: columns.indexOf("GroupBlock"),
             period: columns.indexOf("Period"),
             state: columns.indexOf("StandardState"),
@@ -59,6 +60,8 @@ export default class ExternalServices {
                 radius: parseFloat(cells[indices.radius]) ? parseFloat(cells[indices.radius]) : "Not available",
                 mass: parseFloat(cells[indices.mass]) ? parseFloat(cells[indices.mass]) : "Not available",
                 electronegativity: parseFloat(cells[indices.electronegativity]) ? parseFloat(cells[indices.electronegativity]) : "Not available",
+                melting: parseFloat(cells[indices.melting]) ? parseFloat(cells[indices.melting]) : "Not available",
+                boiling: parseFloat(cells[indices.boiling]) ? parseFloat(cells[indices.boiling]) : "Not available",
                 config: cells[indices.config],
                 groupBlock: cells[indices.groupBlock],
                 period: parseInt(cells[indices.period], 10),
@@ -66,7 +69,6 @@ export default class ExternalServices {
             }
         })
 
-        console.log("Indices : ", indices);
         return curatedData;
     }
 
@@ -85,13 +87,26 @@ export default class ExternalServices {
     processWikiData(data) { 
         try { 
             const page = Object.values(data.query.pages)[0];
-            return page.extract || "No summary available.";
-        } catch (error) {
+
+            let imageUrl = null;
+            if (page.thumbnail) { 
+                imageUrl = page.thumbnail.source;
+            }
+            else if (page.original) { 
+                imageUrl = page.original.source;
+            }
+
+            return {
+                extract: page.extract || "No summary available.",
+                image: imageUrl
+            };
+        }
+        catch (error) {
             console.error("Error processing Wikipedia data:", error);
-            return "An error occured while processing the summary.";
+            return {
+                extract: "An error occured",
+                image: null
+            }
         }
     }
-
-
-
 }

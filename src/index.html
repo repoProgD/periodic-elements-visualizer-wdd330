@@ -19,16 +19,25 @@
         <section id="control-panel">
             <label for="property-select">Sort elements by:</label>
             <select id="property-select">
-                <option value="number">Atomic Number</option>
+                <option value="number">General Information</option>
                 <option value="name">Name</option>
                 <option value="mass">Atomic Mass</option>
                 <option value="radius">Atomic Radius</option>
                 <option value="electronegativity">Electronegativity</option>
+                <option value="melting">Melting Point</option>
+                <option value="boiling">Boiling Point</option>
             </select>
         </section>
 
-        <section id="catalog-container" class="catalog-grid">
-        </section>
+        <section id="catalog-container" class="catalog-grid"></section>
+        <!--TODO remove this testing block-->
+        <div id="test-wikipedia-container" style="background: #f0f0f0; padding: 20px; border: 2px dashed #ccc; margin: 20px;">
+            <h3>Test block for wikipedia content</h3>
+            <p id="test-text">text</p>
+            <div id="test-image-place">picture</div>
+        </div>
+
+        <section id="compare-section" style="display: none;"></section>
     </main>
     <footer id="dynamic-footer"></footer>
 

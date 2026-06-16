@@ -4,6 +4,7 @@
     --secondary-color: #3D2B56;
     --soft1-color: #A898E1;
     --soft2-color: #C5BAE9;
+    --soft3-color: #EDE8FC;
     --overlay-color: #EDEDED;
     --accent1-color: #C5F5B2;
     --accent2-color: #92E096;
@@ -11,6 +12,7 @@
     --text-color-dark: #000000;
     --heading-font: "Lora", serif;
     --body-font: "Roboto", sans-serif;
+    --spacing: 10px;
 }
 
 * {
@@ -30,16 +32,91 @@ header {
     background-color: var(--primary-color);
     height: auto;
     min-height: 100px;
+}
 
+
+.my-logo {
+    width: 30px;
+    height: auto;
+}
+
+.logo {
+    margin-left: var(--spacing);
+    padding-bottom: 15px;
+}
+
+.logo a {
+    color: var(--text-color-light);
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+
+}
+
+main {
+    flex: 1;
+}
+
+h1 {
+    font-family: var(--heading-font);
+    margin-left: var(--spacing);
+    margin-top: 15px;
+}
+
+main p {
+    margin: var(--spacing);
+}
+
+
+footer {
+    background-color: var(--primary-color);
+    color: var(--text-color-light);
+    min-height: 100px;
+    margin-top: 15px;
+}
+
+footer p {
+    margin-left: var(--spacing);
+    padding-top: 15px;
+}
+
+
+/* Control Panel*/
+
+.control-panel div{
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    margin: 0 var(--spacing);
+    gap: 0.25rem 0;
+    width: 100%;
+    max-width: 285px;
+}
+
+.control-panel div label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-top: 10px;
+}
+
+.input-box {
+    height: 1.75rem;
+    border-radius: 6px;
+    background-color: var(--soft3-color);
 }
 
 /* Catalog */
 
-#catalog-container {
+.catalog-grid {
     display: grid;
     grid-template-columns: repeat(1, 1fr);
     gap: 16px;
-    padding: 16px;
+    padding: 16px var(--spacing);
     margin: 0 auto;
     max-width: 1000px;
 }
@@ -57,7 +134,7 @@ header {
     border-radius: 12px;
     padding: 12px;
     box-shadow: 0 2px 4px #808080;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;    /* Advance Feature # 1*/
     position: relative;
     overflow: hidden;
     width: 100%;
@@ -65,7 +142,7 @@ header {
 }
 
 .element-card:hover {
-    transform: translateY(-2px);
+    transform: translateY(-2px);                           /* Advance Feature # 2*/
     box-shadow: 0 4px 12px var(--accent1-color);
     border-color: var(--accent2-color);
     cursor: pointer;
@@ -144,6 +221,13 @@ header {
     font-size: 1.5rem;
 }
 
+.element-card.minimal-mode .card-footer{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
 /* bars */
 
 .bar-container {
@@ -155,11 +239,22 @@ header {
     overflow: hidden;
 }
 
+@keyframes loading-effect{
+    from {
+        width: 0;
+    }
+}
+
 .bar {
     height: 100%;
     background: var(--soft1-color);
     border-radius: 6px 0 0 6px;
-    transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+
+    animation-name: loading-effect;        /* Advance Feature N° 3*/
+    animation-duration: 0.6s;
+    animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    animation-fill-mode: backwards;
+     
 }
 
 .bar-text-overlay {
@@ -182,7 +277,7 @@ header {
 
 /* Compare button */
 
-.compare-btn {
+.primary-bg-btn {
     background: var(--secondary-color);
     height: 24px;
     border: 1px solid #000000;
@@ -195,11 +290,152 @@ header {
 
 }
 
-/* TODO: Media Queries (medium and large) for both kind of card layouts (minimal and clasic)*/
+/* Wiki data section */
+
+.wiki-section-hidden {
+    display: none;
+    opacity: 0;
+}
+
+@keyframes fadeSlideRight {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.wiki-section-active {
+    display: block;
+    grid-column: 1 / -1;
+    background-color: var(--primary-color);
+    color: var(--text-color-light);
+    padding: 25px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px #808080;
+    margin: 15px 0;
+
+    animation: fadeSlideRight 1s ease forwards;   /* Advance Feature N° 4 */
+}
+
+.close-section-btn {
+    float: right;
+    background: none;
+    border: none;
+    color: #ff4a4a;
+    font-size: 1.5rem;
+    cursor: pointer;
+    line-height: 1;
+    padding: 12px;
+    min-width: 44px;
+    min-height: 44px;
+}
+
+/* Compare Table*/
+
+.compare-section {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 10;
+    padding: 0.5rem;
+    background-color: var(--soft1-color);
+    transition: transform 0.3 ease-in-out;
+}
+
+.compare-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding-bottom: 10px;
+    width:100%;
+}
+
+.compare-table {
+    width: 100%;
+    max-width:500px;
+    border-collapse: collapse;
+    margin: 1rem 0;
+}
+
+.compare-table th,
+.compare-table td {
+    padding: 2.5px 5px;
+    font-size: 0.75rem;
+    text-align: left;
+    vertical-align: middle;
+    word-break: keep-all;
+}
+
+.compare-table thead tr {
+    background-color: var(--secondary-color);
+    color: var(--text-color-light)
+}
+
+.compare-table tbody tr:nth-child(odd) {
+    background-color: var(--overlay-color);
+}
+
+.compare-table tbody tr:nth-child(even) {
+    background-color: var(--soft2-color);
+}
+
+.no-results {
+    grid-column: 1 / -1;
+    flex: 1 1 100%;
+    text-align: center;
+    padding: 2rem;
+    font-size: 1.25rem;
+    color: var(--primary-color);
+    font-weight: 600;
+    width: 100%;
+}
+
+
+.alert {
+    background-color:#f8d7da;
+    color:#721c24;
+    border: 1px solid #f5c6cb;
+    padding:15px;
+    margin:15px 0;
+    border-radius:4px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    font-weight:bold;
+    width: 100%;
+}
+
+
+
+/***************************** MEDIA QUERIES  *********************************/
 
 @media only screen and (min-width: 641px) {
     #catalog-container {
         grid-template-columns: repeat(2, 1fr);
+    }
+
+    h1 {
+        text-align: center;
+        margin: 15px auto 0 auto;
+    } 
+    
+    main p {
+        text-align: center;
+        margin: 0 auto;
+    }
+
+    .control-panel {
+        display: flex;
+        justify-content: center;
+        margin: 10px auto 10px auto;
+
     }
 }
 

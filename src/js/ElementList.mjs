@@ -1,25 +1,95 @@
-import { renderListWithTemplate } from "./utils.mjs";
+import { getLocalStorage, renderListWithTemplate } from "./utils.mjs";
 import { elementCardTemplate } from "./Card.mjs";
+import { setLocalStorage } from "./utils.mjs";
 
 export default class ElementList {
-    constructor(dataSource, ListElement, compareAdmin) {
+    constructor(dataSource, ListElement, compareAdmin, modalAdmin) {
         this.dataSource = dataSource;      // ExternalServices instance
         this.ListElement = ListElement;   // HTML container
         this.compareAdmin = compareAdmin;
+        this.modalAdmin = modalAdmin;
         this.elements = [];               // Array that will hold the retrieved data
     }
-
+    
+    // Initialization + current state of the interface
     async init() {
-        this.elements = await this.dataSource.getPeriodicTableData();
-        //this.summary = await this.dataSource.getElementSummary();
-        this.renderList(this.elements, "number");  // number as initial property
+        this.elements = await this.dataSource.getPeriodicTableData(); // retrieves data from ExternalServices
+
+        const searchInput = document.querySelector("#search-input");
+        const selectElement = document.querySelector("#property-select");
+        const groupFilter = document.querySelector("#group-filter");
+
+        // If there are data we load it. Otherwise, we use the defined default values for each input element..
+        if (searchInput) searchInput.value = getLocalStorage("search_query") || "";
+        if (selectElement) selectElement.value = getLocalStorage("filter_property") || "number";
+        if (groupFilter) groupFilter.value = getLocalStorage("filter_group") || "all";
+
         this.listenAndSort();
         this.listenToClicks();
         this.listenToCompare();
+        this.listenToSearch();
+        this.listenToGroupFilter();
+
+        if (this.compareAdmin) { 
+            const storedCompareList = getLocalStorage("compare_list") || [];
+
+            if (storedCompareList.length > 0) { 
+                this.compareAdmin.loadStoredElements(storedCompareList);
+            }
+        }
+
+        this.updateCatalog();
+    }
+
+    // Update the catalog with cards that match the selected criteria
+    updateCatalog() { 
+        const searchInput = document.querySelector("#search-input");
+        const selectElement = document.querySelector("#property-select");
+        const groupFilter = document.querySelector("#group-filter");
+
+        const query = searchInput ? searchInput.value.toLowerCase().trim() : "";
+        const currentProperty = selectElement ? selectElement.value : "number";
+        const selectedGroup = groupFilter ? groupFilter.value.toLowerCase().trim() : "all";
+
+        if (searchInput) setLocalStorage('search_query', searchInput.value);
+        if (selectElement) setLocalStorage('filter_property', selectElement.value);
+        if (groupFilter) setLocalStorage('filter_group', groupFilter.value);
+
+        const filteredElements = this.elements.filter(element => {
+            const nameMatch = element.name.toLowerCase().includes(query); // renders when matches part of the Name
+            const symbolMatch = element.symbol.toLowerCase().includes(query); // renders when matches part of the Name
+            const numberMatch = element.number.toString() === query;   // only renders if it matches the exact number
+            const basicMatches = nameMatch || symbolMatch || numberMatch;
+
+            const elementGroup = element.groupBlock ? element.groupBlock.toLowerCase().trim() : "";
+            const groupMatches = (selectedGroup === "all") || (elementGroup === selectedGroup);
+
+            return basicMatches && groupMatches;
+        });
+
+        const sortedAndFiltered = this.sortByProperty(filteredElements, currentProperty);
+
+        this.renderList(sortedAndFiltered, currentProperty);
     }
 
 
     renderList(elementList, activeProperty = "number") {
+
+        if (this.ListElement) { 
+            this.ListElement.innerHTML = "";
+        }
+
+        if (!elementList || elementList.length === 0) {
+            if (this.ListElement) {
+                const noResultsMessage = document.createElement("p");
+                noResultsMessage.className = "no-results";
+                noResultsMessage.textContent = "No elements found matching your criteria.";
+
+                this.ListElement.appendChild(noResultsMessage);
+            }
+            return;
+        }
+
         // Get min and max values for the active property
         const range = this.getRange(elementList, activeProperty);
         
@@ -48,13 +118,12 @@ export default class ElementList {
     // Event listener for the dropdown menu
     listenAndSort() {
         const selectElement = document.querySelector("#property-select");
+        if (!selectElement) { 
+            return;
+        }
 
-        selectElement.addEventListener("change", (event) => {
-            const selectedProperty = event.target.value;
-
-            const sortedElements = this.sortByProperty(this.elements, selectedProperty);
-            this.renderList(sortedElements, selectedProperty);
-            
+        selectElement.addEventListener("change", () => {
+            this.updateCatalog();  
         });
     }
 
@@ -81,25 +150,28 @@ export default class ElementList {
                 return;
             }
 
-            const elementName = card.dataset.elementName;
+            card.insertAdjacentElement("afterend", this.modalAdmin.container);
 
-            document.getElementById("test-text").textContent = `Loading text of ${elementName}...`;
-            document.getElementById("test-image-place").textContent = "Loading Image...";
+            const atomicNumber = parseInt(card.dataset.number, 10);
+            const element = this.elements.find(ele => ele.number === atomicNumber);
+            if (!element) { 
+                return;
+            }
+
+            this.modalAdmin.showLoading(element.name);
 
             try {
-                const wikiData = await this.dataSource.getElementSummary(elementName);
+                const wikiData = await this.dataSource.getElementSummary(element.name);
 
-                document.getElementById("test-text").textContent = wikiData.extract;
-
-                if (wikiData.image) {
-                    document.getElementById("test-image-place").innerHTML = `<img src="${wikiData.image}" style="max-width: 200px; height: auto;" />`;
-                } else {
-                    document.getElementById("test-image-place").textContent = "This element has not an image on Wikipedia.";
-                }
-            } catch (error) {
-                console.error("Error retrieving data from Wikipedia:", error);
+                this.modalAdmin.renderWikiContent(element, wikiData);
             }
+            
+            catch (error) {
+                console.error("Error retrieving data from Wikipedia: ", error);
+            }
+
         });
+
     }
 
     listenToCompare() { 
@@ -117,6 +189,26 @@ export default class ElementList {
             if (selectedElement && this.compareAdmin) {
                 this.compareAdmin.toggleElement(selectedElement);
             }
+        });
+    }
+
+    listenToSearch() { 
+        const searchinput = document.querySelector("#search-input");
+        if (!searchinput) { 
+            return;
+        }
+
+        searchinput.addEventListener("input", () => {
+            this.updateCatalog();    
+        });
+    }
+
+    listenToGroupFilter() { 
+        const groupFilter = document.querySelector("#group-filter");
+        if (!groupFilter) return;
+
+        groupFilter.addEventListener("change", () => {
+            this.updateCatalog();
         });
     }
 
@@ -142,10 +234,11 @@ export default class ElementList {
         });
     }
 
+    // calculates min and max for a given property in order to create a range which will be used for rendering the cards' bars
     getRange(elements, property) { 
-        // TODO
-        let min = elements[0][property]; // NOT COMPLETELY ROBUST ---> Should find another way of doing it
-        let max = elements[0][property]; // NOT COMPLETELY ROBUST ----> Should find another way of doing it
+
+        let min = Infinity;
+        let max = -Infinity;
 
         elements.forEach(element => {
             const value = element[property];
@@ -174,7 +267,5 @@ export default class ElementList {
         
         return (value - min) / (max - min);
     }
-        
-
-
+    
 }

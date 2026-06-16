@@ -1,11 +1,11 @@
-/* This module should be in charge of: 
+/* This module is in charge of: 
 creating an array to store the selected elements
 couting the number of elements in that array
 setting a maximun of elements that can be compared
 preventing the user to keep adding elements to the array once it has reached the maximun
 Creating an HTML table where will inject the elements data
 */
-
+import { setLocalStorage } from "./utils.mjs";
 
 export default class ElementCompare { 
     constructor(compareElement) { 
@@ -29,7 +29,14 @@ export default class ElementCompare {
 
             this.compareList.push(element);
         }
+        // Store the state of the compareList array everytime it changes
+        setLocalStorage("compare_list", this.compareList);
 
+        this.render();
+    }
+
+    loadStoredElements(storedList) { 
+        this.compareList = storedList;
         this.render();
     }
 
@@ -46,6 +53,9 @@ export default class ElementCompare {
 
         document.getElementById("clear-compare-btn").addEventListener("click", () => {
             this.compareList = [];
+
+            setLocalStorage("compare_list", this.compareList);
+            
             this.render();
         });
     }
@@ -57,8 +67,8 @@ export default class ElementCompare {
                 <table class="compare-table">
                     <thead>
                         <tr>
-                            <th>Property</th>
-                            ${list.map(el => `<th>${el.name} (${el.symbol})</th>`).join("")}
+                            <th></th>
+                            ${list.map(el => `<th>${el.name}</th>`).join("")}
                         </tr>
                     </thead>
                     <tbody>
@@ -71,16 +81,31 @@ export default class ElementCompare {
                             ${list.map(el => `<td>${typeof el.mass === 'number' ? el.mass.toFixed(2) : el.mass} u</td>`).join("")}
                         </tr>
                         <tr>
+                            <td><strong>Atomic Radius</strong></td>
+                            ${list.map(el => `<td>${typeof el.radius === 'number' ? el.radius.toFixed(2) : el.radius}</td>`).join("")}
+                        </tr>
+                        <tr>
                             <td><strong>Electronegativity</strong></td>
                             ${list.map(el => `<td>${el.electronegativity}</td>`).join("")}
                         </tr>
+
+                        <tr>
+                            <td><strong>Melting Point</strong></td>
+                            ${list.map(el => `<td>${typeof el.melting === 'number' ? el.melting.toFixed(2) : el.melting} K</td>`).join("")}
+                        </tr>
+
+                        <tr>
+                            <td><strong>Boiling Point</strong></td>
+                            ${list.map(el => `<td>${typeof el.boiling === 'number' ? el.boiling.toFixed(2) : el.boiling} K</td>`).join("")}
+                        </tr>
+                        
                         <tr>
                             <td><strong>Standard State</strong></td>
                             ${list.map(el => `<td>${el.state || 'N/A'}</td>`).join("")}
                         </tr>
                     </tbody>
                 </table>
-                <button id="clear-compare-btn" class="clear-btn">Reset Comparison</button>
+                <button id="clear-compare-btn" class="clear-btn primary-bg-btn">Reset Comparison</button>
             </div>
         `;
     }

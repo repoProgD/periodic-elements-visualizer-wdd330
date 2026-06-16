@@ -44,3 +44,27 @@ export function getLocalStorage(key) {
 export function setLocalStorage(key, data) {
     localStorage.setItem(key, JSON.stringify(data));
 }
+
+
+export function alertMessage(message, scroll = true) {
+    const main = document.querySelector("main");
+    if (!main) return;
+
+    const alert = document.createElement("div");
+    alert.classList.add("alert");
+
+    alert.innerHTML = `<span>${message}</span><span class="alert-close" style="cursor: pointer; font-weight: bold; padding: 0 10px;">X</span>`;
+
+    alert.addEventListener("click", function (e) {
+        if (e.target.classList.contains("alert-close") || e.target.innerText === 'X') {
+            main.removeChild(this);
+        }
+    });
+
+    // Display at the top of the main
+    main.prepend(alert);
+
+    if (scroll) {
+        window.scrollTo(0, 0);
+    }
+}

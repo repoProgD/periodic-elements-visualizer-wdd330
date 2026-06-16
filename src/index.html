@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Chem-Visualizer | Home</title>
     <link rel="stylesheet" href="/css/style.css" />
+    <!-- Favicon -->
+    <link rel="icon" href="/favicon.ico">
 
     <script type="module" src="/js/main.js"></script>
 </head>
@@ -15,30 +17,54 @@
     <main class="divider">
         <h1>Chemical Element Catalog</h1>
         <p> Explore and sort chemical elements based on their properties</p>
+        <section id="wiki-section" class="wiki-section-hidden"></section>
+        
+        <!-- Section containing all contol elements -->
+        <section class="control-panel" id="control-panel">
+            <!--search bar-->
+            <div class="search-container">
+                <label for="search-input">Search by:</label>
+                <input type="text" class="input-box" id="search-input" placeholder="Type name, symbol or atomic number">   
+            </div>
+            <!--select by properties dropdown menu-->
+            <div class="property-select-container">
+                <label for="property-select">Sort by:</label>
+                <select class="input-box" id="property-select">
+                    <option value="number">General Information</option>
+                    <option value="name">Name</option>
+                    <option value="mass">Atomic Mass</option>
+                    <option value="radius">Atomic Radius</option>
+                    <option value="electronegativity">Electronegativity</option>
+                    <option value="melting">Melting Point</option>
+                    <option value="boiling">Boiling Point</option>
+                </select>
+            </div>
+            <!--select by groupBlock dropdown menu-->
+            <div class="group-filter-container">
+                <label for="group-filter">Filter by Family: </label>
+                <select class="input-box" id="group-filter">
+                    <option value="all">All Families</option>
+                    <option value="Actinide">Actinides</option>
+                    <option value="Alkali metal">Alkali Metals</option>
+                    <option value="Alkaline earth metal">Alkaline Earth Metals</option>
+                    <option value="Halogen">Halogen</option>
+                    <option value="Lanthanide">Lanthanides</option>
+                    <option value="Metalloid">Metalloids</option>
+                    <option value="Noble gas">Noble Gases</option>
+                    <option value="Nonmetal">Nonmetals</option>
+                    <option value="Post-transition metal">Post-Transition Metals</option>
+                    <option value="Transition metal">Transition Metals</option>    
+                </select>
+            </div>
 
-        <section id="control-panel">
-            <label for="property-select">Sort elements by:</label>
-            <select id="property-select">
-                <option value="number">General Information</option>
-                <option value="name">Name</option>
-                <option value="mass">Atomic Mass</option>
-                <option value="radius">Atomic Radius</option>
-                <option value="electronegativity">Electronegativity</option>
-                <option value="melting">Melting Point</option>
-                <option value="boiling">Boiling Point</option>
-            </select>
         </section>
 
         <section id="catalog-container" class="catalog-grid"></section>
-        <!--TODO remove this testing block-->
-        <div id="test-wikipedia-container" style="background: #f0f0f0; padding: 20px; border: 2px dashed #ccc; margin: 20px;">
-            <h3>Test block for wikipedia content</h3>
-            <p id="test-text">text</p>
-            <div id="test-image-place">picture</div>
-        </div>
+        <section id="compare-section" class="compare-section" style="display: none;"></section>
 
-        <section id="compare-section" style="display: none;"></section>
+        <section id="wiki-section" class="wiki-section-hidden"></section>
     </main>
+
     <footer id="dynamic-footer"></footer>
 
 

@@ -1,3 +1,5 @@
+// This class displaysdetailed information from Wikipedia inside a modal container.
+
 export default class ElementDetails {
     constructor(sectionId) {
         this.container = document.getElementById(sectionId);
@@ -8,12 +10,14 @@ export default class ElementDetails {
             return;
         }
 
-        this.container.className = "wiki-section-active";
+        
         this.container.innerHTML = `
             <div class="modal-loading">
                 <p>Retrieving data for <strong>${elementName}</strong> from Wikipedia...</p>
             </div>
         `;
+
+        this.container.classList.add("wiki-section-active");
         
     }
 
@@ -33,13 +37,15 @@ export default class ElementDetails {
             </div>
         `;
 
+        this.container.classList.add("wiki-section-active");
         this.container.querySelector("#close-section-btn").addEventListener("click", () => this.close());
 
+    
     }
 
     close() { 
         if (this.container) { 
-            this.container.className = "wiki-section-hidden";
+            this.container.classList.remove("wiki-section-active");
             this.container.innerHTML = "";
         }
     }

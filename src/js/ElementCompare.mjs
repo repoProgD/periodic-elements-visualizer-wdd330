@@ -42,14 +42,14 @@ export default class ElementCompare {
 
     render() { 
         if (this.compareList.length === 0) { 
-            this.compareElement.style.display = "none";
+            this.compareElement.classList.remove("show-compare");
             this.compareElement.innerHTML = "";
             return;
         }
 
-        this.compareElement.style.display = "block";
-
         this.compareElement.innerHTML = ElementCompare.buildTableTemplate(this.compareList);
+
+        this.compareElement.classList.add("show-compare");
 
         document.getElementById("clear-compare-btn").addEventListener("click", () => {
             this.compareList = [];

@@ -62,7 +62,8 @@ main {
     flex: 1;
 }
 
-h1 {
+h1,
+h2 {
     font-family: var(--heading-font);
     margin-left: var(--spacing);
     margin-top: 15px;
@@ -88,7 +89,7 @@ footer p {
 
 /* Control Panel*/
 
-.control-panel div{
+.control-panel div {
     text-align: center;
     display: flex;
     flex-direction: column;
@@ -134,7 +135,7 @@ footer p {
     border-radius: 12px;
     padding: 12px;
     box-shadow: 0 2px 4px #808080;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;    /* Advance Feature # 1*/
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Advance feature # 1*/
     position: relative;
     overflow: hidden;
     width: 100%;
@@ -142,19 +143,18 @@ footer p {
 }
 
 .element-card:hover {
-    transform: translateY(-2px);                           /* Advance Feature # 2*/
+    transform: translateY(-2px);             /* Advance feature # 1*/
     box-shadow: 0 4px 12px var(--accent1-color);
     border-color: var(--accent2-color);
     cursor: pointer;
 }
 
 .element-symbol {
-    font-size: 1.8rem;
+    font-size: 2rem;
     font-weight: 800;
     color: var(--primary-color);
     margin: 0;
     line-height: 1;
-    letter-spacing: -0.03em;
 }
 
 .element-card:not(.minimal-mode) {
@@ -171,14 +171,14 @@ footer p {
     display: flex;
     justify-content: space-around;
     width: 100%;
-    font-size: 0.85rem;
+    font-size: 0.95rem;
     font-weight: 600;
     color: var(--text-color-dark);
-    margin-bottom: 8px;
+    margin-bottom: 3px;
 }
 
 .element-name {
-    font-size: 0.85rem;
+    font-size: 0.9rem;
     font-weight: 500;
     color: var(--text-color-dark);
     margin: 4px 0 8px 0;
@@ -193,7 +193,7 @@ footer p {
     text-transform: uppercase;
     letter-spacing: 0.05em;
     color: var(--text-color-dark);
-    background:var(--soft2-color);
+    background: var(--soft2-color);
     padding: 2px 8px;
     border-radius: 20px;
     width: fit-content;
@@ -221,7 +221,7 @@ footer p {
     font-size: 1.5rem;
 }
 
-.element-card.minimal-mode .card-footer{
+.element-card.minimal-mode .card-footer {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -239,7 +239,7 @@ footer p {
     overflow: hidden;
 }
 
-@keyframes loading-effect{
+@keyframes loading-effect {
     from {
         width: 0;
     }
@@ -250,11 +250,12 @@ footer p {
     background: var(--soft1-color);
     border-radius: 6px 0 0 6px;
 
-    animation-name: loading-effect;        /* Advance Feature N° 3*/
+    animation-name: loading-effect;
+    /* Advance Feature N° 3*/
     animation-duration: 0.6s;
     animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
     animation-fill-mode: backwards;
-     
+
 }
 
 .bar-text-overlay {
@@ -281,7 +282,7 @@ footer p {
     background: var(--secondary-color);
     height: 24px;
     border: 1px solid #000000;
-    color:var(--accent2-color);
+    color: var(--accent2-color);
     padding: 2px 6px;
     font-size: 0.75rem;
     border-radius: 4px;
@@ -292,34 +293,47 @@ footer p {
 
 /* Wiki data section */
 
-.wiki-section-hidden {
-    display: none;
+#wiki-section {
+    grid-column: 1 / -1;
+    background-color: var(--primary-color);
+    color: var(--text-color-light);
+    border-radius: 8px;
+    box-shadow: 0 4px 15px #808080;
+    display: grid;
+    grid-template-rows: 0fr;
     opacity: 0;
+    margin: 0;
+    padding: 0 15px;
+    overflow: hidden;
+    transition: grid-template-rows 0.5s ease-in-out, opacity 0.4s ease, margin 0.5s ease, padding 0.5s ease; /*Advanced Feature # 3*/
+}
+
+#wiki-section .modal-divider {
+    margin: 0.5rem 0 0.75rem 0;
+}
+
+#wiki-section>* {
+    min-height: 0;
+}
+
+#wiki-section.wiki-section-active {
+    grid-template-rows: 1fr;
+    opacity: 1;
+    margin: 15px 0;
+    padding: 25px;
+    animation: fadeSlideRight 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards; /*Advanced Feature # 3*/
 }
 
 @keyframes fadeSlideRight {
     from {
         opacity: 0;
-        transform: translateX(-20px);
+        transform: translateY(-200px);                  /*Advanced Feature # 3*/
     }
 
     to {
         opacity: 1;
-        transform: translateX(0);
+        transform: translateY(0);
     }
-}
-
-.wiki-section-active {
-    display: block;
-    grid-column: 1 / -1;
-    background-color: var(--primary-color);
-    color: var(--text-color-light);
-    padding: 25px;
-    border-radius: 8px;
-    box-shadow: 0 4px 15px #808080;
-    margin: 15px 0;
-
-    animation: fadeSlideRight 1s ease forwards;   /* Advance Feature N° 4 */
 }
 
 .close-section-btn {
@@ -342,10 +356,18 @@ footer p {
     bottom: 0;
     left: 0;
     right: 0;
-    z-index: 10;
+    z-index: 20;
     padding: 0.5rem;
     background-color: var(--soft1-color);
-    transition: transform 0.3 ease-in-out;
+
+    transform: translateY(200%);
+    opacity: 0;
+    transition: transform 1s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.5s ease;    /*Advanced feature # 2*/
+}
+
+.compare-section.show-compare {
+    transform: translateY(0);   /*Advanced feature # 2*/
+    opacity: 1;
 }
 
 .compare-card {
@@ -354,12 +376,12 @@ footer p {
     align-items: center;
     text-align: center;
     padding-bottom: 10px;
-    width:100%;
+    width: 100%;
 }
 
 .compare-table {
     width: 100%;
-    max-width:500px;
+    max-width: 500px;
     border-collapse: collapse;
     margin: 1rem 0;
 }
@@ -399,16 +421,16 @@ footer p {
 
 
 .alert {
-    background-color:#f8d7da;
-    color:#721c24;
+    background-color: #f8d7da;
+    color: #721c24;
     border: 1px solid #f5c6cb;
-    padding:15px;
-    margin:15px 0;
-    border-radius:4px;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    font-weight:bold;
+    padding: 15px;
+    margin: 15px 0;
+    border-radius: 4px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: bold;
     width: 100%;
 }
 
@@ -424,8 +446,8 @@ footer p {
     h1 {
         text-align: center;
         margin: 15px auto 0 auto;
-    } 
-    
+    }
+
     main p {
         text-align: center;
         margin: 0 auto;
